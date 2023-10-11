@@ -1,0 +1,26 @@
+{{define "title"}}My Post{{end}}
+
+{{define "main"}}
+    <h2>My Posts</h2>
+    {{if .Posts}}
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Created</th>
+            <th>Likes</th>
+        </tr>
+        {{range .Posts}}
+        <tr>
+            <td><a href="/post/view/{{.ID}}">{{.Title}}</a></td>
+            <td>{{humanDate .Created}}</td>
+            <td>{{.Likes}}</td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}}
+        <p>There's nothing to see here... yet!</p>
+    {{end}}
+{{end}}
+
+{{define "plus"}}
+{{end}}

@@ -1,0 +1,41 @@
+{{define "title"}}Home{{end}}
+
+{{define "main"}}        
+   
+    <h2>Latest Posts</h2>
+    {{if .Posts}}
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Created</th>
+            <th>Author</th>
+            <th>Likes</th>
+        </tr>
+        {{range .Posts}}
+        <tr>
+            <td><a href="/post/view/{{.ID}}">{{.Title}}</a></td>
+            <td>{{humanDate .Created}}</td>
+            <td>{{.Author}}</td>
+            <td>{{.Likes}}</td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}}
+        <p>There's nothing to see here... yet!</p>
+    {{end}}
+    
+{{end}}
+
+{{define "plus"}}
+<h5>Filter by:</h5>
+<form method="post">
+        <label>Categories:</label>
+        <input type="checkbox" name="category" value="music"> K-Music
+        <input type="checkbox" name="category" value="dramas"> K-Dramas
+        <input type="checkbox" name="category" value="movies"> K-Movies
+        <input type="checkbox" name="category" value="actors"> Actors
+        <input type="checkbox" name="category" value="idols"> Idols 
+        <input type="submit" value="&#128269;">
+</form>
+{{end}}
+

@@ -1,0 +1,87 @@
+
+{{define "title"}}Post #{{.Post.ID}}{{end}}
+
+{{define "main"}}
+    {{with .Post}}
+    <div class="snippet">
+        <div class="metadata">
+            <div id="postID" hidden>{{.ID}}</div>
+            <strong>{{.Title}}</strong>
+            <span> Author: {{.Author}}</span>
+        </div>
+
+        <pre><code>{{.Content}}</code></pre>
+
+        <div class="metadata">
+            <time>Posted: {{humanDate .Created}}</time>
+    {{end}}
+            {{if .Logged}}
+        
+                <time>
+                    <button id="likeButton" >
+                        <div id="isLiked" hidden>{{.IsLiked}}</div>
+                        {{if .IsLiked}}
+                        <img id="likeIcon" src="/static/img/like.png" alt="Like" width="20" height="20">
+                        {{else}}
+                        <img id="likeIcon" src="/static/img/unlike.png" alt="Like" width="20" height="20">
+                        {{end}}
+                        <span id="likeCount">{{.Post.Likes}}</span>          
+                    </button>
+                </time>
+ 
+            {{end}}
+            </div>
+    </div>
+{{end}}
+
+{{define "plus"}}
+{{if .Comments}}
+<div class="snippet">
+    <div class="metadata">
+    <strong>Comments:</strong>
+
+                {{if .Logged}}
+                    
+                <div>
+                    {{range .Comments}}
+                        {{.Author}}: {{.Comment}}
+                <time>
+                        <button id="commentLikeButton" >
+                            <div id="commentID" hidden>{{.Id}}</div>
+                            <div id="isCommentLiked" hidden>{{.IsLiked}}</div>
+                            {{if .IsLiked}}
+                            <img id="commentLikeIcon" src="/static/img/thumbUpClicked.png" alt="Like" width="30" height="30">
+                            {{else}}
+                            <img id="commentLikeIcon" src="/static/img/thumbUpUnclicked.png" alt="Like" width="30" height="30">
+                            {{end}}
+                            <span id="commentLikeCount">{{.Likes}}</span>          
+                        </button>
+                </time>
+                </div>
+                    {{end}}
+                {{else}}
+                    {{range .Comments}}
+                    <div>
+                        {{.Author}}: {{.Comment}}
+                        <time>Likes: {{.Likes}}</time>
+                    {{end}} 
+                    </div> 
+                {{end}}     
+        </div>
+ </div>
+{{end}}
+
+    {{if .Logged}}
+        <form method="post">
+            <div class="metadata">
+                {{with .FieldErrors.comment}}
+                    <label class='error'>{{.}}</label>
+                {{end}}
+                <input type="text" name="comment" placeholder="Comment..." size="50">         
+                <span><input id="commentSubmit" type="submit" value="Submit" alt="Comment" style="height: 10px;"></span>
+            </div>
+        </form>
+    {{end}}
+</div>
+{{end}}
+
