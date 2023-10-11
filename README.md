@@ -1,45 +1,45 @@
 
-# GROUPIE-TRACKER-Visualizations
-* `bbilisbe` 
-* `yekuanysh` 
+# FORUM
+* `blsbk` 
 
 
 
 #### Description:
 
-Groupie Trackers consists on receiving a given API and manipulate the data contained in it, in order to create a site, displaying the information.
-And build a user friendly website where you can display the bands info through several data visualizations.
+This project consists in creating a web forum that allows :
 
-
+communication between users.
+associating categories to posts.
+liking and disliking posts and comments.
+filtering posts.
+SQLite
 
 
 ## Usage/Examples
 Cloning storage to your host
 ```CMD/Terminal 
-git clone git@git.01.alem.school:bbilisbe/groupie-tracker-visualizations.git
+git clone https://github.com/blsbk/forum.git
 ```
 Go to the downloaded repository:
 
 ```CMD/Terminal 
-cd groupie-tracker-visualizations
+cd forum
 ```
 Run a program:
 ```CMD/Terminal 
-go run . 
+go run ./cmd/web
 ```
 
 Follow the link on the terminal:
 ```CMD/Terminal 
-Starting server got testing... http://127.0.0.1:8080 
+Starting server got testing... https://127.0.0.1:8080 
 ```
 
 
+## Requirements
 
-## HTTP status codes
-* OK (200), if everything went without errors.
-* Not Found, if nothing is found, for example templates or banners.
-* Bad Request, for incorrect requests.
-* Internal Server Error, for unhandled errors.
+#### Data Storage
+In order to store the data in forum (like users, posts, comments, etc.) I used the database library SQLite.
 
 
 
@@ -47,5 +47,3 @@ Starting server got testing... http://127.0.0.1:8080
 
 If you liked our project, we would be grateful if you could add `Star` to the repository.
 
-Alem Student
-19.06.2023.
