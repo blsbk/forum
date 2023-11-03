@@ -12,7 +12,7 @@ const (
 	cookieName = "session"
 )
 
-func SetCookie(w http.ResponseWriter) string {
+func SetCookie(w http.ResponseWriter, id int) string {
 	cookie := &http.Cookie{
 		Name:     cookieName,
 		Value:    GetToken(),
@@ -20,6 +20,7 @@ func SetCookie(w http.ResponseWriter) string {
 		Path:     "/",
 		Expires:  time.Now().Add(time.Hour),
 		MaxAge:   3600,
+		// Raw:      strconv.Itoa(id),
 	}
 
 	http.SetCookie(w, cookie)
@@ -42,6 +43,7 @@ func DeleteCookie(w http.ResponseWriter) {
 		HttpOnly: true,
 		Path:     "/",
 		MaxAge:   -1,
+		// Raw:      "",
 	}
 	http.SetCookie(w, cookie)
 }

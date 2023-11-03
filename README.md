@@ -1,49 +1,50 @@
+## Forum
+* `bbilisbe`
+* `aaidana`
+* `masalen` 
 
-# FORUM
-* `blsbk` 
-
-
-
-#### Description:
-
-This project consists in creating a web forum that allows :
-
-communication between users.
-associating categories to posts.
-liking and disliking posts and comments.
-filtering posts.
-SQLite
+### Description:
+This project involves creating a web forum with features like, post categorization, liking and disliking posts and comments, and post filtering. The data is managed using SQLite, a popular embedded database, and the project encourages optimizing performance with an entity relationship diagram. User authentication allows registration, login sessions with cookie management, and optional UUID usage. Users can create posts and comments, associate categories with posts, and engage with likes and dislikes. A filter system allows users to sort posts by categories.
 
 
-## Usage/Examples
-Cloning storage to your host
-```CMD/Terminal 
-git clone https://github.com/blsbk/forum.git
+### Usage
+Clone the repository:
 ```
-Go to the downloaded repository:
+git clone git@git.01.alem.school:bbilisbe/forum.git
+```
 
-```CMD/Terminal 
+#### Run with docker
+Go to the downloaded repository: 
+```
+cd forum
+```
+Build a program:
+```
+make build
+```
+Run a program:
+```
+make run
+```
+Open the link in browser
+```
+https://127.0.0.1:7070
+```
+Stop a program:
+```
+make stop
+```
+#### Run without docker
+Go to the downloaded repository: 
+```
 cd forum
 ```
 Run a program:
-```CMD/Terminal 
-go run ./cmd/web
 ```
-
-Follow the link on the terminal:
-```CMD/Terminal 
-Starting server got testing... https://127.0.0.1:8080 
+go run ./cmd/
 ```
-
-
-## Requirements
-
-#### Data Storage
-In order to store the data in forum (like users, posts, comments, etc.) I used the database library SQLite.
-
-
-
-## Feedback
-
-If you liked our project, we would be grateful if you could add `Star` to the repository.
-
+Open the link in browser
+```
+https://127.0.0.1:7070
+```
+ 

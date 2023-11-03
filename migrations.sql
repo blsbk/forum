@@ -1,51 +1,40 @@
-package dbase
+PRAGMA foreign_keys = ON;
 
-import "database/sql"
-
-func OpenDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "forum.db")
-	if err != nil {
-		return nil, err
-	}
-
-	if err = db.Ping(); err != nil {
-		return nil, err
-	}
-
-	return db, nil
-}
-
-func Exec(db *sql.DB) error {
-	sts := `
-	DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS posts;
 
 	CREATE TABLE posts(
 		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 		title VARCHAR(100) NOT NULL,
 		content TEXT NOT NULL,
 		created DATETIME NOT NULL,
-		author TEXT,
-		likes NUMBER
+		author TEXT NOT NULL,
+		likes NUMBER,
+		dislikes NUMBER,
+		tags TEXT NOT NULL
 	);
 
 	CREATE INDEX idx_posts_created ON posts(created);
 
-	INSERT INTO posts (title, content, created, author, likes) VALUES (
+	INSERT INTO posts (title, content, created, author, likes, dislikes, tags) VALUES (
 	'New Dorama "Tomorrow"',
 	'KBS is releasing new drama starring Idol-Actor from SF9 Rowoon',
 	datetime('now', 'utc'),
 	'Bagdat',
-	'0'
+	'0',
+	'0',
+	'dramas idols'
 	);
-	INSERT INTO posts (title, content, created, author, likes) VALUES (
+	INSERT INTO posts (title, content, created, author, likes, dislikes, tags) VALUES (
 	'STRAY KIDS new release!',
 	'STRAY KIDS from JYPE is releasing new song called "CASE 134". 
 	Breaking the records on Bilboard-100.',
 	datetime('now', 'utc'),
 	'Bagdat',
-	'0'
+	'0',
+	'0',
+	'music idols'
 	);
-	INSERT INTO posts (title, content, created, author, likes) VALUES (
+	INSERT INTO posts (title, content, created, author, likes, dislikes, tags) VALUES (
 	'BLACKPINK Lisa is dating someone?',
 	'Member of BLACKPINK Lisa is romoured to be dating
 	 a Hollywood movie star. YG Entertainment is staying silent 
@@ -53,7 +42,9 @@ func Exec(db *sql.DB) error {
 	 with his family.',
 	datetime('now', 'utc'),
 	'Yerassyl',
-	'0'
+	'0',
+	'0',
+	'idols'
 	);
 	
 	DROP TABLE IF EXISTS users;
@@ -66,16 +57,24 @@ func Exec(db *sql.DB) error {
 	token TEXT,
 	expiry DATETIME,
 	created DATETIME NOT NULL,
-	CONSTRAINT unique_email UNIQUE (email)
+	CONSTRAINT unique_email UNIQUE (email),
+	CONSTRAINT unique_name UNIQUE (username)
 	);
 
 
 
-	DROP TABLE IF EXISTS liked;
+	DROP TABLE IF EXISTS likes;
 
-	CREATE TABLE liked (
-		postid INTEGER PRIMARY KEY,
-		by TEXT
+	CREATE TABLE likes (
+		postid INTEGER,
+		likedby TEXT
+	);
+
+	DROP TABLE IF EXISTS dislikes;
+
+	CREATE TABLE dislikes (
+		postid INTEGER,
+		dislikedby TEXT
 	);
 
 	DROP TABLE IF EXISTS comments;
@@ -85,7 +84,8 @@ func Exec(db *sql.DB) error {
 		postid INTEGER,
 		comment TEXT,
 		likes INTEGER,
-		by TEXT
+		dislikes INTEGER,
+		commentby TEXT
 	);
 
 	DROP TABLE IF EXISTS comment_likes;
@@ -93,7 +93,15 @@ func Exec(db *sql.DB) error {
 	CREATE TABLE comment_likes (
 		commentid INTEGER,
 		postid INTEGER,
-		by TEXT
+		likedby TEXT
+	);
+
+	DROP TABLE IF EXISTS comment_dislikes;
+
+	CREATE TABLE comment_dislikes (
+		commentid INTEGER,
+		postid INTEGER,
+		dislikedby TEXT
 	);
 
 	DROP TABLE IF EXISTS categories;
@@ -123,10 +131,3 @@ func Exec(db *sql.DB) error {
 		'3',
 		'idols'
 	);
-	`
-	_, err := db.Exec(sts)
-	if err != nil {
-		return err
-	}
-	return nil
-}

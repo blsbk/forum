@@ -2,7 +2,7 @@
 
 {{define "main"}}
 <form action="/user/login" method="post" novalidate>
-    {{range .NonFieldErrors}}
+    {{with .NonFieldErrors.email}}
         <div class="error">{{.}}</div>
     {{end}}
     <div>
@@ -25,4 +25,7 @@
 </form>
 {{end}}
 {{define "plus"}}
+{{end}}
+{{define "scripts"}}
+<script src="/static/js/main.js"></script>
 {{end}}
