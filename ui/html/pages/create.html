@@ -5,41 +5,48 @@
     {{with .NonFieldErrors.tags}}
     <div class="error">{{.}}</div>
     {{end}}
-        <div>
+    <div>
         <label>Title:</label>
-        <!-- Use the `with` action to render the value of .Form.FieldErrors.title
-        if it is not empty. -->
         {{with .FieldErrors.title}}
-        <label class='error'>{{.}}</label>
+        <label class="error">{{.}}</label>
         {{end}}
-        <!-- Re-populate the title data by setting the `value` attribute. -->
-        <input type='text' name='title' value='{{.Form.Title}}'>
-        </div>
-        <div>
+        <input type="text" name="title" value="{{.Form.Title}}">
+    </div>
+    <div>
         <label>Content:</label>
-        <!-- Likewise render the value of .Form.FieldErrors.content if it is not
-        empty. -->
         {{with .FieldErrors.content}}
-        <label class='error'>{{.}}</label>
+        <label class="error">{{.}}</label>
         {{end}}
-        <!-- Re-populate the content data as the inner HTML of the textarea. -->
-        <textarea name='content'>{{.Form.Content}}</textarea>
-        </div>
+        <textarea name="content">{{.Form.Content}}</textarea>
+    </div>
     <div>
         <label>Category:</label>
         <input type="checkbox" name="category" value="music" checked> K-Music
         <input type="checkbox" name="category" value="dramas"> K-Dramas
         <input type="checkbox" name="category" value="movies"> K-Movies
         <input type="checkbox" name="category" value="actors"> Actors
-        <input type="checkbox" name="category" value="idols"> Idols 
+        <input type="checkbox" name="category" value="idols"> Idols
     </div>
+
+    {{/* Image upload section */}}
     <div>
-        <input type="submit" value="Publish post"></a>
+        <h3>Image Upload</h3>
+        <!-- <form method="post" enctype="multipart/form-data"> -->
+            <input type="file" name="image" alt="hello" accept="image/*">
+            <!-- <input type="submit" value="Upload Image" formenctype="multipart/form-data"> -->
+        <!-- </form> -->
+    </div>
+
+    <div>
+        <input type="submit" value="Publish post" formenctype="multipart/form-data">
     </div>
 </form>
 {{end}}
+
 {{define "plus"}}
+{{/* This section is empty because it's not needed for the updated form */}}
 {{end}}
+
 {{define "scripts"}}
 <script src="/static/js/main.js" type="text/javascript"></script>
 {{end}}

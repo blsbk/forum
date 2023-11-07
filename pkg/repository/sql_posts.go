@@ -16,11 +16,11 @@ func NewSqlPostsRepository(conn *sql.DB) models.PostRepository {
 	return &sqlPostsRepository{conn}
 }
 
-func (m *sqlPostsRepository) Insert(title, content, author string, categories []string) (int, error) {
-	stmt := `INSERT INTO posts (title, content, created, author, likes, dislikes, tags)
-	VALUES(?, ?, datetime('now', 'utc'), ?, "0", "0", ?);`
+func (m *sqlPostsRepository) Insert(data models.PostCreateForm, author string) (int, error) {
+	stmt := `INSERT INTO posts (title, content, created, author, likes, dislikes, tags, image)
+	VALUES(?, ?, datetime('now', 'utc'), ?, "0", "0", ?, ?);`
 
-	result, err := m.Conn.Exec(stmt, title, content, author, strings.Join(categories, " "))
+	result, err := m.Conn.Exec(stmt, data.Title, data.Content, author, strings.Join(data.Categories, " "), data.ImageURL)
 	if err != nil {
 		return 0, err
 	}
@@ -29,7 +29,7 @@ func (m *sqlPostsRepository) Insert(title, content, author string, categories []
 	if err != nil {
 		return 0, err
 	}
-	err = m.CategoryInsert(id, categories)
+	err = m.CategoryInsert(id, data.Categories)
 	if err != nil {
 		return 0, err
 	}
@@ -51,16 +51,22 @@ func (m *sqlPostsRepository) CategoryInsert(postid int64, categories []string) e
 // This will insert a new post into the database.
 func (m *sqlPostsRepository) Get(id int) (*models.Post, error) {
 	p := &models.Post{}
+	var image sql.NullString
 
-	stmt := `SELECT id, title, content, created, author, likes, dislikes, tags FROM posts WHERE id = ?`
+	stmt := `SELECT id, title, content, created, author, likes, dislikes, tags, image FROM posts WHERE id = ?`
 
-	err := m.Conn.QueryRow(stmt, id).Scan(&p.ID, &p.Title, &p.Content, &p.Created, &p.Author, &p.Likes, &p.Dislikes, &p.Tags)
+	err := m.Conn.QueryRow(stmt, id).Scan(&p.ID, &p.Title, &p.Content, &p.Created, &p.Author, &p.Likes, &p.Dislikes, &p.Tags, &image)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNoRecord
 		} else {
 			return nil, err
 		}
+	}
+	if image.Valid {
+		p.Image = image.String
+	} else {
+		p.Image = ""
 	}
 	return p, nil
 }

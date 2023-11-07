@@ -4,10 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"forum.bbilisbe/internal/models"
 	"forum.bbilisbe/internal/validator"
+	"github.com/gofrs/uuid"
 )
 
 func (h *Handler) postView(w http.ResponseWriter, r *http.Request) {
@@ -78,8 +83,9 @@ func (h *Handler) postCreate(w http.ResponseWriter, r *http.Request) {
 
 	} else if r.Method == http.MethodPost {
 
-		err := r.ParseForm()
+		err := r.ParseMultipartForm(10 << 20)
 		if err != nil {
+			fmt.Println(err)
 			h.clientError(w, http.StatusBadRequest)
 			return
 		}
@@ -89,6 +95,37 @@ func (h *Handler) postCreate(w http.ResponseWriter, r *http.Request) {
 			Title:      r.PostForm.Get("title"),
 			Content:    r.PostForm.Get("content"),
 			Categories: r.Form["category"],
+		}
+
+		file, handler, err := r.FormFile("image")
+		if err == nil {
+			uniqueID, err := uuid.NewV4()
+			if err != nil {
+				h.serverError(w, err)
+				return
+			}
+			filename := strings.Replace(uniqueID.String(), "-", "", -1)
+			prevname := filepath.Base(handler.Filename)
+			fileExt := filepath.Ext(prevname)
+
+			if fileExt != ".jpeg" && fileExt != ".png" && fileExt != ".gif" && fileExt != ".jpg" {
+				h.clientError(w, http.StatusBadRequest)
+			}
+
+			image := fmt.Sprintf("%s%s", filename, fileExt)
+			f, err := os.Create(fmt.Sprintf("./ui/static/img/user_images/%s", image))
+			if err != nil {
+				h.serverError(w, err)
+				return
+			}
+			defer f.Close()
+
+			_, err = io.Copy(f, file)
+			if err != nil {
+				h.serverError(w, err)
+				return
+			}
+			form.ImageURL = fmt.Sprintf("/static/img/user_images/%s", image)
 		}
 
 		if len(form.Categories) == 0 {
@@ -109,7 +146,7 @@ func (h *Handler) postCreate(w http.ResponseWriter, r *http.Request) {
 		}
 
 		author, _ := h.UUsecase.GetUserInfo(r)
-		id, err := h.PUsecase.Insert(form.Title, form.Content, author, form.Categories)
+		id, err := h.PUsecase.Insert(form, author)
 		if err != nil {
 			h.serverError(w, err)
 			return

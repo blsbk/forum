@@ -340,3 +340,10 @@ footer {
     color: #6A6C6F;
     text-align: center;
 }
+
+.image-container {
+    max-width: 100%; /* Ensures the image doesn't exceed its container width */
+    max-height: 100%; /* Ensures the image doesn't exceed its container height */
+    width: auto; /* Allows the image to scale proportionally */
+    height: auto; /* Allows the image to scale proportionally */
+}

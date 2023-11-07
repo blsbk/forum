@@ -34,8 +34,8 @@ func (m *postsUsecase) GetPostId(r *http.Request) (int, error) {
 	return id, nil
 }
 
-func (m *postsUsecase) Insert(title, content, author string, categories []string) (int, error) {
-	return m.postsRepo.Insert(title, content, author, categories)
+func (m *postsUsecase) Insert(data models.PostCreateForm, author string) (int, error) {
+	return m.postsRepo.Insert(data, author)
 }
 
 func (m *postsUsecase) CategoryInsert(postid int64, categories []string) error {

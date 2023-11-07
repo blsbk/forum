@@ -7,7 +7,7 @@
             <strong>{{.Title}}</strong>
             <span> Author: {{.Author}}</span>
         </div>
-        <pre><code>{{.Content}}</code></pre>
+        <pre><code>{{.Content}}  {{if eq .Image ""}} {{else}} <br> <img class="image-container" src="{{.Image}}"> {{end}}</code></pre>
         <div class="metadata">
             <time>Posted: {{humanDate .Created}} <br> Tags: {{.Tags}}</time>
     {{end}}

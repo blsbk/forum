@@ -7,7 +7,7 @@ import (
 )
 
 type PostUsecases interface {
-	Insert(string, string, string, []string) (int, error)
+	Insert(PostCreateForm, string) (int, error)
 	Get(int) (*Post, error)
 	Latest() (map[int]*Post, error)
 	GetPostId(*http.Request) (int, error)
@@ -26,7 +26,7 @@ type PostUsecases interface {
 }
 
 type PostRepository interface {
-	Insert(string, string, string, []string) (int, error)
+	Insert(PostCreateForm, string) (int, error)
 	Get(int) (*Post, error)
 	Latest() (map[int]*Post, error)
 	GetPostId()
@@ -53,6 +53,7 @@ type Post struct {
 	Likes    int `json:"likeCount"`
 	Dislikes int `json:"dislikeCount"`
 	Tags     string
+	Image    string
 }
 
 type PostComments struct {
@@ -73,6 +74,7 @@ type PostCreateForm struct {
 	Title      string
 	Content    string
 	Categories []string
+	ImageURL   string
 }
 
 type CommentLikeData struct {

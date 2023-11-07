@@ -10,7 +10,8 @@ DROP TABLE IF EXISTS posts;
 		author TEXT NOT NULL,
 		likes NUMBER,
 		dislikes NUMBER,
-		tags TEXT NOT NULL
+		tags TEXT NOT NULL,
+		image TEXT
 	);
 
 	CREATE INDEX idx_posts_created ON posts(created);
