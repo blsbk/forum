@@ -1,8 +1,6 @@
 PRAGMA foreign_keys = ON;
 
-DROP TABLE IF EXISTS posts;
-
-	CREATE TABLE posts(
+	CREATE TABLE IF NOT EXISTS posts(
 		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 		title VARCHAR(100) NOT NULL,
 		content TEXT NOT NULL,
@@ -14,43 +12,10 @@ DROP TABLE IF EXISTS posts;
 		image TEXT
 	);
 
-	CREATE INDEX idx_posts_created ON posts(created);
+	CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created);
 
-	INSERT INTO posts (title, content, created, author, likes, dislikes, tags) VALUES (
-	'New Dorama "Tomorrow"',
-	'KBS is releasing new drama starring Idol-Actor from SF9 Rowoon',
-	datetime('now', 'utc'),
-	'Bagdat',
-	'0',
-	'0',
-	'dramas idols'
-	);
-	INSERT INTO posts (title, content, created, author, likes, dislikes, tags) VALUES (
-	'STRAY KIDS new release!',
-	'STRAY KIDS from JYPE is releasing new song called "CASE 134". 
-	Breaking the records on Bilboard-100.',
-	datetime('now', 'utc'),
-	'Bagdat',
-	'0',
-	'0',
-	'music idols'
-	);
-	INSERT INTO posts (title, content, created, author, likes, dislikes, tags) VALUES (
-	'BLACKPINK Lisa is dating someone?',
-	'Member of BLACKPINK Lisa is romoured to be dating
-	 a Hollywood movie star. YG Entertainment is staying silent 
-	 on this situation, while Lisa herself is going on a vacation 
-	 with his family.',
-	datetime('now', 'utc'),
-	'Yerassyl',
-	'0',
-	'0',
-	'idols'
-	);
-	
-	DROP TABLE IF EXISTS users;
 
-	CREATE TABLE users (
+	CREATE TABLE IF NOT EXISTS users (
 	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	username VARCHAR(255) NOT NULL,
 	email VARCHAR(255) NOT NULL,
@@ -63,24 +28,18 @@ DROP TABLE IF EXISTS posts;
 	);
 
 
-
-	DROP TABLE IF EXISTS likes;
-
-	CREATE TABLE likes (
+	CREATE TABLE IF NOT EXISTS likes (
 		postid INTEGER,
 		likedby TEXT
 	);
 
-	DROP TABLE IF EXISTS dislikes;
 
-	CREATE TABLE dislikes (
+	CREATE TABLE IF NOT EXISTS dislikes (
 		postid INTEGER,
 		dislikedby TEXT
 	);
 
-	DROP TABLE IF EXISTS comments;
-
-	CREATE TABLE comments (
+	CREATE TABLE IF NOT EXISTS comments (
 		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		postid INTEGER,
 		comment TEXT,
@@ -89,46 +48,20 @@ DROP TABLE IF EXISTS posts;
 		commentby TEXT
 	);
 
-	DROP TABLE IF EXISTS comment_likes;
-
-	CREATE TABLE comment_likes (
+	CREATE TABLE IF NOT EXISTS comment_likes (
 		commentid INTEGER,
 		postid INTEGER,
 		likedby TEXT
 	);
 
-	DROP TABLE IF EXISTS comment_dislikes;
-
-	CREATE TABLE comment_dislikes (
+	CREATE TABLE IF NOT EXISTS comment_dislikes (
 		commentid INTEGER,
 		postid INTEGER,
 		dislikedby TEXT
 	);
 
-	DROP TABLE IF EXISTS categories;
 
-	CREATE TABLE categories (
+	CREATE TABLE IF NOT EXISTS categories (
 		postid INTEGER,
 		category TEXT
-	);
-
-	INSERT INTO categories (postid, category) VALUES (
-		'1',
-		'dramas'
-	);
-	INSERT INTO categories (postid, category) VALUES (
-		'1',
-		'idols'
-	);
-	INSERT INTO categories (postid, category) VALUES (
-		'2',
-		'music'
-	);
-	INSERT INTO categories (postid, category) VALUES (
-		'2',
-		'idols'
-	);
-	INSERT INTO categories (postid, category) VALUES (
-		'3',
-		'idols'
 	);

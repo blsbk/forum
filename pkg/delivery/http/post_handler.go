@@ -82,8 +82,9 @@ func (h *Handler) postCreate(w http.ResponseWriter, r *http.Request) {
 		h.render(w, http.StatusOK, "create.html", data)
 
 	} else if r.Method == http.MethodPost {
+		maxRequestSize := int64(20 * 1024 * 1024)
 
-		err := r.ParseMultipartForm(10 << 20)
+		err := r.ParseMultipartForm(maxRequestSize)
 		if err != nil {
 			fmt.Println(err)
 			h.clientError(w, http.StatusBadRequest)
@@ -98,6 +99,13 @@ func (h *Handler) postCreate(w http.ResponseWriter, r *http.Request) {
 		}
 
 		file, handler, err := r.FormFile("image")
+		// Check if the request size exceeds the limit.
+		if r.ContentLength > maxRequestSize {
+			data.Form = form
+			data.AddNonFieldError("image", "Choose image less than 20MB")
+			h.render(w, http.StatusUnprocessableEntity, "create.html", data)
+			return
+		}
 		if err == nil {
 			uniqueID, err := uuid.NewV4()
 			if err != nil {
@@ -132,6 +140,7 @@ func (h *Handler) postCreate(w http.ResponseWriter, r *http.Request) {
 			data.Form = form
 			data.AddNonFieldError("tags", "Tags cannot be empty")
 			h.render(w, http.StatusUnprocessableEntity, "create.html", data)
+			os.Remove(fmt.Sprintf("./ui%s", form.ImageURL))
 			return
 		}
 

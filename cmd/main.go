@@ -48,8 +48,6 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	userRepo.Insert("Bagdat", "bagdat@gmail.com", "123456789")
-
 	// Running the HTTP server
 	infoLog.Printf("Starting server on... https://127.0.0.1%s \n", *addr)
 	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")

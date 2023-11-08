@@ -5,6 +5,9 @@
     {{with .NonFieldErrors.tags}}
     <div class="error">{{.}}</div>
     {{end}}
+    {{with .NonFieldErrors.image}}
+    <div class="error">{{.}}</div>
+    {{end}}
     <div>
         <label>Title:</label>
         {{with .FieldErrors.title}}
