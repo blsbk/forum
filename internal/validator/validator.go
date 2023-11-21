@@ -23,8 +23,7 @@ func (v *Validator) Valid() bool {
 // AddFieldError() adds an error message to the FieldErrors map (so long as no
 // entry already exists for the given key).
 func (v *Validator) AddFieldError(key, message string) {
-	// Note: We need to initialize the map first, if it isn't already
-	// initialized.
+
 	if v.FieldErrors == nil {
 		v.FieldErrors = make(map[string]string)
 	}
@@ -68,12 +67,3 @@ func Matches(value string, rx *regexp.Regexp) bool {
 	return rx.MatchString(value)
 }
 
-// PermittedInt() returns true if a value is in a list of permitted integers.
-// func PermittedInt(value int, permittedValues ...int) bool {
-// for i := range permittedValues {
-// if value == permittedValues[i] {
-// return true
-// }
-// }
-// return false
-// }

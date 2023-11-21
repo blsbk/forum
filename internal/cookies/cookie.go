@@ -20,7 +20,6 @@ func SetCookie(w http.ResponseWriter, id int) string {
 		Path:     "/",
 		Expires:  time.Now().Add(time.Hour),
 		MaxAge:   3600,
-		// Raw:      strconv.Itoa(id),
 	}
 
 	http.SetCookie(w, cookie)
@@ -43,7 +42,6 @@ func DeleteCookie(w http.ResponseWriter) {
 		HttpOnly: true,
 		Path:     "/",
 		MaxAge:   -1,
-		// Raw:      "",
 	}
 	http.SetCookie(w, cookie)
 }

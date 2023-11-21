@@ -134,7 +134,7 @@ func (h *Handler) userLogout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) userPosts(w http.ResponseWriter, r *http.Request) {
-	author, _ := h.UUsecase.GetUserInfo(r)
+	author, _ := h.UUsecase.GetUserId(r)
 
 	posts, err := h.UUsecase.GetUserPosts(author)
 	if err != nil {
@@ -149,7 +149,7 @@ func (h *Handler) userPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) userLikedPosts(w http.ResponseWriter, r *http.Request) {
-	user, _ := h.UUsecase.GetUserInfo(r)
+	user, _ := h.UUsecase.GetUserId(r)
 
 	posts, err := h.UUsecase.GetUserLikes(user)
 	if err != nil {
@@ -162,3 +162,4 @@ func (h *Handler) userLikedPosts(w http.ResponseWriter, r *http.Request) {
 
 	h.render(w, http.StatusOK, "userposts.html", data)
 }
+

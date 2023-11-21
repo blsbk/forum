@@ -16,7 +16,7 @@ func NewSqlPostsRepository(conn *sql.DB) models.PostRepository {
 	return &sqlPostsRepository{conn}
 }
 
-func (m *sqlPostsRepository) Insert(data models.PostCreateForm, author string) (int, error) {
+func (m *sqlPostsRepository) Insert(data models.PostCreateForm, author int) (int, error) {
 	stmt := `INSERT INTO posts (title, content, created, author, likes, dislikes, tags, image)
 	VALUES(?, ?, datetime('now', 'utc'), ?, "0", "0", ?, ?);`
 
@@ -48,7 +48,6 @@ func (m *sqlPostsRepository) CategoryInsert(postid int64, categories []string) e
 	return nil
 }
 
-// This will insert a new post into the database.
 func (m *sqlPostsRepository) Get(id int) (*models.Post, error) {
 	p := &models.Post{}
 	var image sql.NullString
@@ -131,7 +130,7 @@ func (m *sqlPostsRepository) FilteredPosts(categories []string) (map[int]*models
 	return posts, nil
 }
 
-func (m *sqlPostsRepository) LikeInsert(likeData models.UserLikeData, likedBy string) error {
+func (m *sqlPostsRepository) LikeInsert(likeData models.UserLikeData, likedBy int) error {
 	stmt := `UPDATE posts SET likes = ? WHERE ? = id`
 
 	_, err := m.Conn.Exec(stmt, likeData.Likes, likeData.ID)
@@ -162,7 +161,7 @@ func (m *sqlPostsRepository) LikeInsert(likeData models.UserLikeData, likedBy st
 	return nil
 }
 
-func (m *sqlPostsRepository) RemoveLike(postid int, likedBy string) error {
+func (m *sqlPostsRepository) RemoveLike(postid int, likedBy int) error {
 	stmt := `DELETE FROM likes WHERE likedby = ? AND postid = ?`
 	_, err := m.Conn.Exec(stmt, likedBy, postid)
 	if err != nil {
@@ -183,7 +182,7 @@ func (m *sqlPostsRepository) RemoveLike(postid int, likedBy string) error {
 	return nil
 }
 
-func (m *sqlPostsRepository) DislikeInsert(dislikeData models.UserDislikeData, dislikedBy string) error {
+func (m *sqlPostsRepository) DislikeInsert(dislikeData models.UserDislikeData, dislikedBy int) error {
 	stmt := `UPDATE posts SET dislikes = ? WHERE ? = id`
 
 	_, err := m.Conn.Exec(stmt, dislikeData.Dislikes, dislikeData.ID)
@@ -215,7 +214,7 @@ func (m *sqlPostsRepository) DislikeInsert(dislikeData models.UserDislikeData, d
 	return nil
 }
 
-func (m *sqlPostsRepository) RemoveDislike(postid int, likedBy string) error {
+func (m *sqlPostsRepository) RemoveDislike(postid int, likedBy int) error {
 	stmt := `DELETE FROM dislikes WHERE dislikedby = ? AND postid = ?`
 	_, err := m.Conn.Exec(stmt, likedBy, postid)
 	if err != nil {
@@ -236,7 +235,7 @@ func (m *sqlPostsRepository) RemoveDislike(postid int, likedBy string) error {
 	return nil
 }
 
-func (m *sqlPostsRepository) IsLikedByUser(user string, postid int) bool {
+func (m *sqlPostsRepository) IsLikedByUser(user int, postid int) bool {
 	stmt := `SELECT EXISTS (SELECT * FROM likes WHERE likedby = ? AND postid = ?)`
 
 	var exists bool
@@ -248,7 +247,7 @@ func (m *sqlPostsRepository) IsLikedByUser(user string, postid int) bool {
 	return exists
 }
 
-func (m *sqlPostsRepository) IsDislikedByUser(user string, postid int) bool {
+func (m *sqlPostsRepository) IsDislikedByUser(user int, postid int) bool {
 	stmt := `SELECT EXISTS (SELECT * FROM dislikes WHERE dislikedby = ? AND postid = ?)`
 
 	var exists bool
@@ -260,7 +259,7 @@ func (m *sqlPostsRepository) IsDislikedByUser(user string, postid int) bool {
 	return exists
 }
 
-func (m *sqlPostsRepository) CommentInsert(comment, commentBy string, postId int) error {
+func (m *sqlPostsRepository) CommentInsert(comment string, commentBy int, postId int) error {
 	stmt := `INSERT INTO comments (postid, comment, commentby, likes, dislikes) VALUES(?, ?, ?, '0', '0');`
 
 	_, err := m.Conn.Exec(stmt, postId, comment, commentBy)
@@ -271,7 +270,7 @@ func (m *sqlPostsRepository) CommentInsert(comment, commentBy string, postId int
 	return nil
 }
 
-func (m *sqlPostsRepository) GetComments(postId int, user string) ([]*models.PostComments, error) {
+func (m *sqlPostsRepository) GetComments(postId int, user int) ([]*models.PostComments, error) {
 	stmt := `SELECT id, comment, commentby, likes, dislikes FROM comments WHERE postid = ?;`
 	rows, err := m.Conn.Query(stmt, postId)
 	if err != nil {
@@ -302,7 +301,7 @@ func (m *sqlPostsRepository) GetComments(postId int, user string) ([]*models.Pos
 	return comments, nil
 }
 
-func (m *sqlPostsRepository) CommentLikeInsert(likeData models.CommentLikeData, likedBy string) error {
+func (m *sqlPostsRepository) CommentLikeInsert(likeData models.CommentLikeData, likedBy int) error {
 	stmt := `UPDATE comments SET likes = ? WHERE id = ?`
 
 	_, err := m.Conn.Exec(stmt, likeData.Likes, likeData.ID)
@@ -333,7 +332,7 @@ func (m *sqlPostsRepository) CommentLikeInsert(likeData models.CommentLikeData, 
 	return nil
 }
 
-func (m *sqlPostsRepository) RemoveCommentLike(commentid int, likedBy string) error {
+func (m *sqlPostsRepository) RemoveCommentLike(commentid int, likedBy int) error {
 	stmt := `DELETE FROM comment_likes WHERE likedby = ? AND commentid = ?`
 	_, err := m.Conn.Exec(stmt, likedBy, commentid)
 	if err != nil {
@@ -354,7 +353,7 @@ func (m *sqlPostsRepository) RemoveCommentLike(commentid int, likedBy string) er
 	return nil
 }
 
-func (m *sqlPostsRepository) IsCommentLikedByUser(user string, commentid int) bool {
+func (m *sqlPostsRepository) IsCommentLikedByUser(user int, commentid int) bool {
 	stmt := `SELECT EXISTS (SELECT * FROM comment_likes WHERE likedby = ? AND commentid = ?)`
 
 	var exists bool
@@ -366,7 +365,7 @@ func (m *sqlPostsRepository) IsCommentLikedByUser(user string, commentid int) bo
 	return exists
 }
 
-func (m *sqlPostsRepository) CommentDislikeInsert(dislikeData models.CommentDislikeData, dislikedBy string) error {
+func (m *sqlPostsRepository) CommentDislikeInsert(dislikeData models.CommentDislikeData, dislikedBy int) error {
 	stmt := `UPDATE comments SET dislikes = ? WHERE id = ?`
 
 	_, err := m.Conn.Exec(stmt, dislikeData.Dislikes, dislikeData.ID)
@@ -397,7 +396,7 @@ func (m *sqlPostsRepository) CommentDislikeInsert(dislikeData models.CommentDisl
 	return nil
 }
 
-func (m *sqlPostsRepository) RemoveCommentDislike(commentid int, likedBy string) error {
+func (m *sqlPostsRepository) RemoveCommentDislike(commentid int, likedBy int) error {
 	stmt := `DELETE FROM comment_dislikes WHERE dislikedby = ? AND commentid = ?`
 	_, err := m.Conn.Exec(stmt, likedBy, commentid)
 	if err != nil {
@@ -418,7 +417,7 @@ func (m *sqlPostsRepository) RemoveCommentDislike(commentid int, likedBy string)
 	return nil
 }
 
-func (m *sqlPostsRepository) IsCommentDislikedByUser(user string, commentid int) bool {
+func (m *sqlPostsRepository) IsCommentDislikedByUser(user int, commentid int) bool {
 	stmt := `SELECT EXISTS (SELECT * FROM comment_dislikes WHERE dislikedby = ? AND commentid = ?)`
 
 	var exists bool

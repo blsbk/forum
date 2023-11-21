@@ -30,25 +30,25 @@ func NewPostHandler(pu models.PostUsecases, uu models.UserUsecases, infoLog, err
 	}
 	mux := http.NewServeMux()
 
-	// if err != nil {
-	// 	errorLog.Fatal(err)
-	// }
-
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("/", handler.home)
-	mux.HandleFunc("/post/view/", handler.postView)
-	mux.HandleFunc("/post/create", handler.RequireLog(handler.postCreate))
-	mux.HandleFunc("/user/signup", handler.userSignup)
-	mux.HandleFunc("/user/login", handler.userLogin)
+	mux.HandleFunc("/", handler.RestrictGetPost(handler.home))
+	mux.HandleFunc("/post/view/", handler.RestrictGetPost(handler.postView))
+	mux.HandleFunc("/post/create", handler.RestrictGetPost(handler.RequireLog(handler.postCreate)))
+	mux.HandleFunc("/user/signup", handler.RestrictGetPost(handler.userSignup))
+	mux.HandleFunc("/user/login", handler.RestrictGetPost(handler.userLogin))
+	mux.HandleFunc("/user/login/google", handler.RestrictGet(handler.googleLogin))
+	mux.HandleFunc("/callback", handler.RestrictGet(handler.googleCallback))
+	mux.HandleFunc("/user/login/github", handler.RestrictGet(handler.githubLogin))
+	mux.HandleFunc("/github/callback", handler.RestrictGet(handler.githubCallback))
 	mux.HandleFunc("/user/logout", handler.RestrictPost(handler.userLogout))
 	mux.HandleFunc("/user/posts", handler.RestrictGet(handler.userPosts))
 	mux.HandleFunc("/user/likedposts", handler.RestrictGet(handler.userLikedPosts))
-	mux.HandleFunc("/post/like", handler.RequireLog(handler.postLike))
-	mux.HandleFunc("/post/dislike", handler.RequireLog(handler.postDislike))
-	mux.HandleFunc("/post/commentLike", handler.RequireLog(handler.commentLike))
-	mux.HandleFunc("/post/commentDislike", handler.RequireLog(handler.commentDislike))
+	mux.HandleFunc("/post/like", handler.RequireLog(handler.RestrictPost(handler.postLike)))
+	mux.HandleFunc("/post/dislike", handler.RequireLog(handler.RestrictPost(handler.postDislike)))
+	mux.HandleFunc("/post/commentLike", handler.RequireLog(handler.RestrictPost(handler.commentLike)))
+	mux.HandleFunc("/post/commentDislike", handler.RequireLog(handler.RestrictPost(handler.commentDislike)))
 
 	return handler.RecoverPanic(handler.AuthMiddleware(handler.LogRequest(handler.SecureHeaders(mux))))
 }
@@ -99,8 +99,11 @@ func (h *Handler) home(w http.ResponseWriter, r *http.Request) {
 			h.serverError(w, err)
 			return
 		}
+		
 	}
-
+	for _, post := range posts {
+		post.Author, _ = h.UUsecase.GetUserName(post.Author)
+	}
 	data := h.newTemplateData(r)
 	data.Posts = posts
 

@@ -34,7 +34,7 @@ func (m *postsUsecase) GetPostId(r *http.Request) (int, error) {
 	return id, nil
 }
 
-func (m *postsUsecase) Insert(data models.PostCreateForm, author string) (int, error) {
+func (m *postsUsecase) Insert(data models.PostCreateForm, author int) (int, error) {
 	return m.postsRepo.Insert(data, author)
 }
 
@@ -42,12 +42,10 @@ func (m *postsUsecase) CategoryInsert(postid int64, categories []string) error {
 	return m.postsRepo.CategoryInsert(postid, categories)
 }
 
-// This will insert a new post into the database.
 func (m *postsUsecase) Get(id int) (*models.Post, error) {
 	return m.postsRepo.Get(id)
 }
 
-// This will return the 10 most recently created posts.
 
 func (m *postsUsecase) Latest() (map[int]*models.Post, error) {
 	return m.postsRepo.Latest()
@@ -89,42 +87,42 @@ func containsAllCategories(tags []string, categories []string) bool {
 	return true
 }
 
-func (m *postsUsecase) LikeInsert(likeData models.UserLikeData, likedBy string) error {
+func (m *postsUsecase) LikeInsert(likeData models.UserLikeData, likedBy int) error {
 	return m.postsRepo.LikeInsert(likeData, likedBy)
 }
 
-func (m *postsUsecase) DislikeInsert(dislikeData models.UserDislikeData, likedBy string) error {
+func (m *postsUsecase) DislikeInsert(dislikeData models.UserDislikeData, likedBy int) error {
 	return m.postsRepo.DislikeInsert(dislikeData, likedBy)
 }
 
-func (m *postsUsecase) IsLikedByUser(user string, postid int) bool {
+func (m *postsUsecase) IsLikedByUser(user int, postid int) bool {
 	return m.postsRepo.IsLikedByUser(user, postid)
 }
 
-func (m *postsUsecase) IsDislikedByUser(user string, postid int) bool {
+func (m *postsUsecase) IsDislikedByUser(user int, postid int) bool {
 	return m.postsRepo.IsDislikedByUser(user, postid)
 }
 
-func (m *postsUsecase) CommentInsert(comment, commentBy string, postId int) error {
+func (m *postsUsecase) CommentInsert(comment string, commentBy int, postId int) error {
 	return m.postsRepo.CommentInsert(comment, commentBy, postId)
 }
 
-func (m *postsUsecase) GetComments(postId int, user string) ([]*models.PostComments, error) {
+func (m *postsUsecase) GetComments(postId int, user int) ([]*models.PostComments, error) {
 	return m.postsRepo.GetComments(postId, user)
 }
 
-func (m *postsUsecase) CommentLikeInsert(likeData models.CommentLikeData, likedBy string) error {
+func (m *postsUsecase) CommentLikeInsert(likeData models.CommentLikeData, likedBy int) error {
 	return m.postsRepo.CommentLikeInsert(likeData, likedBy)
 }
 
-func (m *postsUsecase) IsCommentLikedByUser(user string, commentid int) bool {
+func (m *postsUsecase) IsCommentLikedByUser(user int, commentid int) bool {
 	return m.postsRepo.IsCommentLikedByUser(user, commentid)
 }
 
-func (m *postsUsecase) CommentDislikeInsert(dislikeData models.CommentDislikeData, dislikedBy string) error {
+func (m *postsUsecase) CommentDislikeInsert(dislikeData models.CommentDislikeData, dislikedBy int) error {
 	return m.postsRepo.CommentDislikeInsert(dislikeData, dislikedBy)
 }
 
-func (m *postsUsecase) IsCommentDislikedByUser(user string, commentid int) bool {
+func (m *postsUsecase) IsCommentDislikedByUser(user int, commentid int) bool {
 	return m.postsRepo.IsCommentDislikedByUser(user, commentid)
 }

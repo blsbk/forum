@@ -10,28 +10,32 @@ type UserUsecases interface {
 	Insert(string, string, string) error
 	Authenticate(string, string) (int, error)
 	Exists(int) (bool, error)
-	GetUserInfo(*http.Request) (string, error)
+	GetUserId(*http.Request) (int, error)
+	GetUserName(id string) (string, error)
+	GetUserInfo(email, name string) (int, error)
 	AddToken(int, string) error
 	GetToken(string) (string, error)
 	IsExpired(string) bool
 	RemoveToken(string) error
 	IsLogged(*http.Request) bool
-	GetUserLikes(string) (map[int]*Post, error)
-	GetUserPosts(string) (map[int]*Post, error)
+	GetUserLikes(int) (map[int]*Post, error)
+	GetUserPosts(int) (map[int]*Post, error)
 }
 
 type UserRepository interface {
 	Insert(string, string, string) error
 	Authenticate(string, string) (int, error)
 	Exists(int) (bool, error)
-	GetUserInfo(*http.Request) (string, error)
+	GetUserId(*http.Request) (int, error)
+	GetUserName(id string) (string, error)
+	GetUserInfo(email, name string) (int, error)
 	AddToken(int, string) error
 	GetToken(string) (string, error)
 	IsExpired(string) (*time.Time, error)
 	RemoveToken(string) error
 	IsLogged()
-	GetUserLikes(string) (map[int]*Post, error)
-	GetUserPosts(string) (map[int]*Post, error)
+	GetUserLikes(int) (map[int]*Post, error)
+	GetUserPosts(int) (map[int]*Post, error)
 }
 
 type User struct {

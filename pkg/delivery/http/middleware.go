@@ -7,12 +7,6 @@ import (
 	"forum.bbilisbe/internal/cookies"
 )
 
-// type GoMiddleware struct{}
-
-// func InitMiddleware() *GoMiddleware {
-// 	return &GoMiddleware{}
-// }
-
 func (h *Handler) SecureHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Security-Policy",
@@ -36,7 +30,10 @@ func (h *Handler) AuthMiddleware(next http.Handler) http.Handler {
 		}
 		// Check if the session exists and is valid.
 		session, err := h.UUsecase.GetToken(token.Value)
-		fmt.Println(session, err)
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
 
 		if session == "" || h.UUsecase.IsExpired(session) {
 			cookies.DeleteCookie(w)
@@ -84,6 +81,18 @@ func (h *Handler) RestrictPost(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			w.Header().Set("Allow", http.MethodPost)
+			h.clientError(w, http.StatusMethodNotAllowed)
+			return
+		}
+		next.ServeHTTP(w, r)
+	}
+}
+
+func (h *Handler) RestrictGetPost(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodPost {
+			w.Header().Set("Allow", http.MethodGet)
+			w.Header().Add("Allow", http.MethodPost)
 			h.clientError(w, http.StatusMethodNotAllowed)
 			return
 		}

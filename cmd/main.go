@@ -49,7 +49,7 @@ func main() {
 	}
 
 	// Running the HTTP server
-	infoLog.Printf("Starting server on... https://127.0.0.1%s \n", *addr)
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	infoLog.Printf("Starting server on... http://127.0.0.1%s \n", *addr)
+	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
 }

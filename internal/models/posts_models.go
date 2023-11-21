@@ -7,40 +7,40 @@ import (
 )
 
 type PostUsecases interface {
-	Insert(PostCreateForm, string) (int, error)
+	Insert(PostCreateForm, int) (int, error)
 	Get(int) (*Post, error)
 	Latest() (map[int]*Post, error)
 	GetPostId(*http.Request) (int, error)
 	FilteredPosts([]string) (map[int]*Post, error)
-	LikeInsert(UserLikeData, string) error
-	DislikeInsert(UserDislikeData, string) error
-	IsLikedByUser(string, int) bool
-	IsDislikedByUser(string, int) bool
-	CommentInsert(string, string, int) error
-	GetComments(int, string) ([]*PostComments, error)
-	CommentLikeInsert(CommentLikeData, string) error
-	IsCommentLikedByUser(string, int) bool
-	CommentDislikeInsert(CommentDislikeData, string) error
-	IsCommentDislikedByUser(string, int) bool
+	LikeInsert(UserLikeData, int) error
+	DislikeInsert(UserDislikeData, int) error
+	IsLikedByUser(int, int) bool
+	IsDislikedByUser(int, int) bool
+	CommentInsert(string, int, int) error
+	GetComments(int, int) ([]*PostComments, error)
+	CommentLikeInsert(CommentLikeData, int) error
+	IsCommentLikedByUser(int, int) bool
+	CommentDislikeInsert(CommentDislikeData, int) error
+	IsCommentDislikedByUser(int, int) bool
 	CategoryInsert(int64, []string) error
 }
 
 type PostRepository interface {
-	Insert(PostCreateForm, string) (int, error)
+	Insert(PostCreateForm, int) (int, error)
 	Get(int) (*Post, error)
 	Latest() (map[int]*Post, error)
 	GetPostId()
 	FilteredPosts([]string) (map[int]*Post, error)
-	LikeInsert(UserLikeData, string) error
-	DislikeInsert(UserDislikeData, string) error
-	IsLikedByUser(string, int) bool
-	IsDislikedByUser(string, int) bool
-	CommentInsert(string, string, int) error
-	GetComments(int, string) ([]*PostComments, error)
-	CommentLikeInsert(CommentLikeData, string) error
-	IsCommentLikedByUser(string, int) bool
-	CommentDislikeInsert(CommentDislikeData, string) error
-	IsCommentDislikedByUser(string, int) bool
+	LikeInsert(UserLikeData, int) error
+	DislikeInsert(UserDislikeData, int) error
+	IsLikedByUser(int, int) bool
+	IsDislikedByUser(int, int) bool
+	CommentInsert(string, int, int) error
+	GetComments(int, int) ([]*PostComments, error)
+	CommentLikeInsert(CommentLikeData, int) error
+	IsCommentLikedByUser(int, int) bool
+	CommentDislikeInsert(CommentDislikeData, int) error
+	IsCommentDislikedByUser(int, int) bool
 	CategoryInsert(int64, []string) error
 }
 

@@ -62,14 +62,21 @@ func (m *userUsecase) IsExpired(token string) bool {
 
 }
 
-func (m *userUsecase) GetUserInfo(r *http.Request) (string, error) {
-	return m.usersRepo.GetUserInfo(r)
+func (m *userUsecase) GetUserId(r *http.Request) (int, error) {
+	return m.usersRepo.GetUserId(r)
+}
+func (m *userUsecase) GetUserName(id string) (string, error) {
+	return m.usersRepo.GetUserName(id)
 }
 
-func (m *userUsecase) GetUserPosts(author string) (map[int]*models.Post, error) {
+func (m *userUsecase) GetUserInfo(email, name string) (int, error) {
+	return m.usersRepo.GetUserInfo(email, name)
+ }
+
+func (m *userUsecase) GetUserPosts(author int) (map[int]*models.Post, error) {
 	return m.usersRepo.GetUserPosts(author)
 }
 
-func (m *userUsecase) GetUserLikes(user string) (map[int]*models.Post, error) {
+func (m *userUsecase) GetUserLikes(user int) (map[int]*models.Post, error) {
 	return m.usersRepo.GetUserLikes(user)
 }

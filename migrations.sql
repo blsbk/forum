@@ -5,7 +5,7 @@ PRAGMA foreign_keys = ON;
 		title VARCHAR(100) NOT NULL,
 		content TEXT NOT NULL,
 		created DATETIME NOT NULL,
-		author TEXT NOT NULL,
+		author NUMBER NOT NULL,
 		likes NUMBER,
 		dislikes NUMBER,
 		tags TEXT NOT NULL,
@@ -27,16 +27,17 @@ PRAGMA foreign_keys = ON;
 	CONSTRAINT unique_name UNIQUE (username)
 	);
 
+	UPDATE users SET token = NULL, expiry = NULL;
 
 	CREATE TABLE IF NOT EXISTS likes (
 		postid INTEGER,
-		likedby TEXT
+		likedby NUMBER
 	);
 
 
 	CREATE TABLE IF NOT EXISTS dislikes (
 		postid INTEGER,
-		dislikedby TEXT
+		dislikedby NUMBER
 	);
 
 	CREATE TABLE IF NOT EXISTS comments (
@@ -45,19 +46,19 @@ PRAGMA foreign_keys = ON;
 		comment TEXT,
 		likes INTEGER,
 		dislikes INTEGER,
-		commentby TEXT
+		commentby NUMBER
 	);
 
 	CREATE TABLE IF NOT EXISTS comment_likes (
 		commentid INTEGER,
 		postid INTEGER,
-		likedby TEXT
+		likedby NUMBER
 	);
 
 	CREATE TABLE IF NOT EXISTS comment_dislikes (
 		commentid INTEGER,
 		postid INTEGER,
-		dislikedby TEXT
+		dislikedby NUMBER
 	);
 
 

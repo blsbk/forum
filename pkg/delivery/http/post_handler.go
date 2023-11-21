@@ -31,8 +31,12 @@ func (h *Handler) postView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	post.Author, _ = h.UUsecase.GetUserName(post.Author)
 
-	user, err := h.UUsecase.GetUserInfo(r)
+	user, err := h.UUsecase.GetUserId(r)
+	if err != nil {
+		h.serverError(w, err)
+	}
 	data := h.newTemplateData(r)
 	Comments, _ := h.PUsecase.GetComments(postId, user)
 	data.Comments = Comments
@@ -154,7 +158,7 @@ func (h *Handler) postCreate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		author, _ := h.UUsecase.GetUserInfo(r)
+		author, _ := h.UUsecase.GetUserId(r)
 		id, err := h.PUsecase.Insert(form, author)
 		if err != nil {
 			h.serverError(w, err)
@@ -168,7 +172,7 @@ func (h *Handler) postCreate(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) postLike(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/post/like" {
 
-		user, _ := h.UUsecase.GetUserInfo(r)
+		user, _ := h.UUsecase.GetUserId(r)
 
 		var likeData models.UserLikeData
 
@@ -190,7 +194,7 @@ func (h *Handler) postLike(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) postDislike(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/post/dislike" {
 
-		user, _ := h.UUsecase.GetUserInfo(r)
+		user, _ := h.UUsecase.GetUserId(r)
 
 		var dislikeData models.UserDislikeData
 
@@ -212,7 +216,7 @@ func (h *Handler) postDislike(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) commentLike(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/post/commentLike" {
 
-		user, _ := h.UUsecase.GetUserInfo(r)
+		user, _ := h.UUsecase.GetUserId(r)
 
 		var commentLikeData models.CommentLikeData
 
@@ -234,7 +238,7 @@ func (h *Handler) commentLike(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) commentDislike(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/post/commentDislike" {
 
-		user, _ := h.UUsecase.GetUserInfo(r)
+		user, _ := h.UUsecase.GetUserId(r)
 
 		var commentDislikeData models.CommentDislikeData
 

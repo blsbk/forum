@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"io/ioutil"
+	"os"
 )
 
 func SetUpDB(dbType, dbName string) (*sql.DB, error) {
@@ -22,7 +22,7 @@ func SetUpDB(dbType, dbName string) (*sql.DB, error) {
 }
 
 func migrate(db *sql.DB) error {
-	fileByte, err := ioutil.ReadFile("migrations.sql")
+	fileByte, err := os.ReadFile("migrations.sql")
 	if err != nil {
 		return err
 	}

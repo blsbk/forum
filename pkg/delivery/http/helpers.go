@@ -1,6 +1,8 @@
 package delivery
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -73,7 +75,7 @@ func (h *Handler) newTemplateData(r *http.Request) *models.TemplateData {
 }
 
 func Errors(w http.ResponseWriter, status int, message string) {
-	// w.WriteHeader(status)
+
 	t, err := template.ParseFiles("ui/html/error.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -91,4 +93,13 @@ func Errors(w http.ResponseWriter, status int, message string) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func generateRandomPassword(length int) (string, error) {
+	bytes := make([]byte, length)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return "", err
+	}
+	return base64.URLEncoding.EncodeToString(bytes), nil
 }

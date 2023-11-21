@@ -51,6 +51,7 @@ func (m *sqlUserRepository) Authenticate(email, password string) (int, error) {
 	err := m.Conn.QueryRow(stmt, email).Scan(&id, &hashedPwd)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
+			fmt.Println("here1")
 			return 0, models.ErrInvalidCredentials
 		} else {
 			return 0, err
@@ -60,6 +61,8 @@ func (m *sqlUserRepository) Authenticate(email, password string) (int, error) {
 	err = bcrypt.CompareHashAndPassword(hashedPwd, []byte(password))
 	if err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			fmt.Println("here2")
+
 			return 0, models.ErrInvalidCredentials
 		} else {
 			return 0, err
@@ -95,22 +98,46 @@ func (m *sqlUserRepository) RemoveToken(token string) error {
 	return err
 }
 
-func (m *sqlUserRepository) GetUserInfo(r *http.Request) (string, error) {
-	var author string
+func (m *sqlUserRepository) GetUserId(r *http.Request) (int, error) {
+	var user int
 
 	cookie, err := cookies.GetCookie(r)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	token := cookie.Value
 
-	stmt := "SELECT username FROM users WHERE token = ?"
+	stmt := "SELECT id FROM users WHERE token = ?"
 
-	err = m.Conn.QueryRow(stmt, token).Scan(&author)
+	err = m.Conn.QueryRow(stmt, token).Scan(&user)
+	if err != nil {
+		return 0, err
+	}
+	return user, nil
+}
+
+func (m *sqlUserRepository) GetUserName(id string) (string, error) {
+	var user string
+
+	stmt := "SELECT username FROM users WHERE id = ?"
+
+	err := m.Conn.QueryRow(stmt, id).Scan(&user)
 	if err != nil {
 		return "", err
 	}
-	return author, nil
+	return user, nil
+}
+
+func (m *sqlUserRepository) GetUserInfo(email, name string) (int, error) {
+	var user int
+
+	stmt := "SELECT id FROM users WHERE email = ? AND username = ?"
+
+	err := m.Conn.QueryRow(stmt, email, name).Scan(&user)
+	if err != nil {
+		return 0, err
+	}
+	return user, nil
 }
 
 func (m *sqlUserRepository) GetToken(token string) (string, error) {
@@ -147,7 +174,7 @@ func (m *sqlUserRepository) IsLogged() {
 	return
 }
 
-func (m *sqlUserRepository) GetUserPosts(author string) (map[int]*models.Post, error) {
+func (m *sqlUserRepository) GetUserPosts(author int) (map[int]*models.Post, error) {
 	stmt := `SELECT id, title, content, created, author, likes, tags FROM posts WHERE author = ?`
 
 	rows, err := m.Conn.Query(stmt, author)
@@ -176,7 +203,7 @@ func (m *sqlUserRepository) GetUserPosts(author string) (map[int]*models.Post, e
 	return posts, nil
 }
 
-func (m *sqlUserRepository) GetUserLikes(user string) (map[int]*models.Post, error) {
+func (m *sqlUserRepository) GetUserLikes(user int) (map[int]*models.Post, error) {
 	stmt := `SELECT id, title, content, created, author, likes, tags FROM posts JOIN likes ON posts.id = likes.postid WHERE likes.likedby = ?`
 
 	rows, err := m.Conn.Query(stmt, user)
