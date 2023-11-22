@@ -16,12 +16,12 @@ import (
 
 var (
 	RedirectURI = "http://localhost:7070/callback"
-	ClientID = "1051144686890-55ghds60ubiojko89ethk0a4td8034h8.apps.googleusercontent.com"
-	ClientSecret = "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"
+	ClientID = ""
+	ClientSecret = "-"
 
-	GitClientID = "0d1adce00fcca75bacfb"
+	GitClientID = ""
 	GitRedirectURI = "http://localhost:7070/github/callback"
-	GitClientSecret = "f9af9f11b2e331c8e37202f581f8c366b16d8b7f"
+	GitClientSecret = ""
 )
 
 func (h *Handler) googleLogin(w http.ResponseWriter, r *http.Request) {
